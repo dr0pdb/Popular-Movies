@@ -1,7 +1,10 @@
 package com.example.srv_twry.popularmovies;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +13,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -23,6 +28,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
     public static String TAG = MovieListActivity.class.getSimpleName();
     public static ArrayList<Movie> movieArrayList;
     RecyclerView movieListRecyclerView;
+    ProgressBar progressBar;
 
     public static String POSTER_PATH_KEY = "poster_path";
     public static String IS_ADULT_KEY = "isAdult";
@@ -46,16 +52,19 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        final String baseUrl = "https://api.themoviedb.org/3/discover/movie?api_key=";
+        final String baseUrlPopularity = "https://api.themoviedb.org/3/movie/popular?api_key=";
         final String apiKey = getResources().getString(R.string.Api_key);
-        final String postApiKeyUrlPopularity= "&language=en-US&sort_by=popularity.desc&include_adult=true&include_video=false&page=1";
-        final String postApiKeyUrlTopRated="&language=en-US&sort_by=vote_average.desc&include_adult=true&include_video=false&page=1";
+        final String postApiKeyUrl= "&language=en-US&page=1";
+        final String baseUrlTopRated="https://api.themoviedb.org/3/movie/top_rated?api_key=";
 
-        finalURLPopularity = baseUrl.concat(apiKey.concat(postApiKeyUrlPopularity));
-        finalURLTopRated= baseUrl.concat(apiKey.concat(postApiKeyUrlTopRated));
+        finalURLPopularity = baseUrlPopularity.concat(apiKey.concat(postApiKeyUrl));
+        finalURLTopRated= baseUrlTopRated.concat(apiKey.concat(postApiKeyUrl));
         movieArrayList = new ArrayList<>();
-        new GetMovieListAsyncTask().execute(finalURLPopularity);
+        if (isNetworkAvailable()){
+            new GetMovieListAsyncTask().execute(finalURLPopularity);
+        }
         movieListRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
+        progressBar = (ProgressBar) findViewById(R.id.pb_loading_Data);
         MovieListAdapter movieListAdapter = new MovieListAdapter(movieArrayList,this,this);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2);
         movieListRecyclerView.setAdapter(movieListAdapter);
@@ -76,10 +85,12 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_sort_popularity) {
+        if (id == R.id.action_sort_popularity && isNetworkAvailable()) {
             new GetMovieListAsyncTask().execute(finalURLPopularity);
-        }else if (id == R.id.action_sort_toprated){
+            showProgressBar();
+        }else if (id == R.id.action_sort_toprated && isNetworkAvailable()){
             new GetMovieListAsyncTask().execute(finalURLTopRated);
+            showProgressBar();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -117,6 +128,23 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         intent.putExtra(VOTE_AVERAGE_KEY,voteAverage);
 
         startActivity(intent);
+    }
+
+    //A helper method to check Internet Connection Status
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    public void showData(){
+        progressBar.setVisibility(View.GONE);
+        movieListRecyclerView.setVisibility(View.VISIBLE);
+    }
+    public void showProgressBar(){
+        progressBar.setVisibility(View.VISIBLE);
+        movieListRecyclerView.setVisibility(View.GONE);
     }
 
     private class GetMovieListAsyncTask extends AsyncTask<String,Void,ArrayList<Movie>>{
@@ -182,8 +210,10 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
                 @Override
                 public void run() {
                     MovieListAdapter movieListAdapter = new MovieListAdapter(MovieListActivity.movieArrayList,MovieListActivity.this,getBaseContext());
+                    showData();
                     movieListRecyclerView.setAdapter(movieListAdapter);
                     movieListRecyclerView.invalidate();
+
                 }
             });
         }

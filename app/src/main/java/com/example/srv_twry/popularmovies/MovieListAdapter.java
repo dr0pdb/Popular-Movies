@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -20,7 +19,7 @@ import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder> {
 
-    private final String TAG = "MovieListAdapter";
+    private String TAG = "MovieListAdapter";
     private final ArrayList<Movie> movieArrayList;
     private final MovieListRecyclerViewOnClickListener movieListRecyclerViewOnClickListener;
     private Context context;    //This to use the Picasso library
