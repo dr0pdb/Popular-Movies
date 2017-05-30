@@ -1,26 +1,21 @@
 package com.example.srv_twry.popularmovies;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.util.ArrayList;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListAdapter.MovieListRecyclerViewOnClickListener {
@@ -43,7 +38,8 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
     public static String VOTE_COUNT_KEY = "voteCount";
     public static String VOTE_AVERAGE_KEY = "voteAverage";
 
-
+    String finalURLPopularity ;
+    String finalURLTopRated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,15 +47,17 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         setContentView(R.layout.activity_movie_list);
 
         final String baseUrl = "https://api.themoviedb.org/3/discover/movie?api_key=";
-        final String apiKey = getResources().getString(R.string.API_key);
-        final String postApiKeyUrl= "&language=en-US&sort_by=popularity.desc&include_adult=true&include_video=false&page=1";
+        final String apiKey = getResources().getString(R.string.Api_key);
+        final String postApiKeyUrlPopularity= "&language=en-US&sort_by=popularity.desc&include_adult=true&include_video=false&page=1";
+        final String postApiKeyUrlTopRated="&language=en-US&sort_by=vote_average.desc&include_adult=true&include_video=false&page=1";
 
-        String finalURLPopularity = baseUrl.concat(apiKey.concat(postApiKeyUrl));
+        finalURLPopularity = baseUrl.concat(apiKey.concat(postApiKeyUrlPopularity));
+        finalURLTopRated= baseUrl.concat(apiKey.concat(postApiKeyUrlTopRated));
         movieArrayList = new ArrayList<>();
         new GetMovieListAsyncTask().execute(finalURLPopularity);
         movieListRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
         MovieListAdapter movieListAdapter = new MovieListAdapter(movieArrayList,this,this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2);
         movieListRecyclerView.setAdapter(movieListAdapter);
         movieListRecyclerView.setLayoutManager(gridLayoutManager);
     }
@@ -74,16 +72,15 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_sort_popularity) {
+            new GetMovieListAsyncTask().execute(finalURLPopularity);
+        }else if (id == R.id.action_sort_toprated){
+            new GetMovieListAsyncTask().execute(finalURLTopRated);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
