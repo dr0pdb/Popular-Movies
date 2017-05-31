@@ -1,6 +1,8 @@
 package com.example.srv_twry.popularmovies;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -10,13 +12,17 @@ import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-public class MovieDetailsActivity extends AppCompatActivity {
+public class MovieDetailsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<String>{
+
+    public final int LOADER_KEY_VIDEO=1;
+    public final int LOADER_KEY_REVIEWS=2;
 
     String poster_path;
     String overview;
     String releaseDate;
     String title;
     double voteAverage;
+    int id;
 
     ImageView posterImageView;
     TextView titleTextView;
@@ -42,6 +48,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             poster_path = bundle.getString(MovieListActivity.POSTER_PATH_KEY);
             overview = bundle.getString(MovieListActivity.OVERVIEW_KEY);
             releaseDate = bundle.getString(MovieListActivity.RELEASE_DATE_KEY);
+            id=bundle.getInt(MovieListActivity.ID_KEY);
 
             try{
                 releaseDate = "Year of Release: "+releaseDate.substring(0,4);
@@ -82,4 +89,8 @@ public class MovieDetailsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+
+    //AsyncTask to load trailers
+
 }
