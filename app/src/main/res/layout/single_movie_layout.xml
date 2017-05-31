@@ -14,7 +14,8 @@
             android:id="@+id/iv_poster"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/MoviePoster"/>
 
     </RelativeLayout>
 

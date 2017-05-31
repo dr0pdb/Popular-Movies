@@ -2,6 +2,7 @@ package com.example.srv_twry.popularmovies;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,10 +15,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
     String poster_path;
     String overview;
     String releaseDate;
-    int id;
-    String originalTitle;
     String title;
-    int voteCount;
     double voteAverage;
 
     ImageView posterImageView;
@@ -44,11 +42,15 @@ public class MovieDetailsActivity extends AppCompatActivity {
             poster_path = bundle.getString(MovieListActivity.POSTER_PATH_KEY);
             overview = bundle.getString(MovieListActivity.OVERVIEW_KEY);
             releaseDate = bundle.getString(MovieListActivity.RELEASE_DATE_KEY);
-            releaseDate = "Year of Release: "+releaseDate.substring(0,4);
-            id = bundle.getInt(MovieListActivity.ID_KEY);
-            originalTitle=  bundle.getString(MovieListActivity.ORIGINAL_TITLE_KEY);
+
+            try{
+                releaseDate = "Year of Release: "+releaseDate.substring(0,4);
+            }catch (NullPointerException e){
+                e.printStackTrace();
+                Log.e(MovieDetailsActivity.class.getName(),"Wrong Date");
+            }
+
             title = bundle.getString(MovieListActivity.TITLE_KEY);
-            voteCount = bundle.getInt(MovieListActivity.VOTE_COUNT_KEY);
             voteAverage = bundle.getDouble(MovieListActivity.VOTE_AVERAGE_KEY);
 
             try {

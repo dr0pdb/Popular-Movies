@@ -2,9 +2,8 @@
     <string name="app_name">Popular Movies</string>
     <string name="sort_by_popularity">Get Popular</string>
     <string name="sort_by_top_rated">Get Top-Rated</string>
-    <string name="adult_description">18+</string>
     <string name="string_pseudo">Pseudo text</string>
-
     <string name="overview">Overview</string>
     <string name="Movie_Detail">Movie Details</string>
+    <string name="MoviePoster">Movie Poster here</string>
 </resources>

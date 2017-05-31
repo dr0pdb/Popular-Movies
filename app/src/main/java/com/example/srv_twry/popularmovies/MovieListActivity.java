@@ -1,6 +1,5 @@
 package com.example.srv_twry.popularmovies;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -25,26 +24,26 @@ import java.util.ArrayList;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListAdapter.MovieListRecyclerViewOnClickListener {
 
-    public static String TAG = MovieListActivity.class.getSimpleName();
+    public static final String TAG = MovieListActivity.class.getSimpleName();
     public static ArrayList<Movie> movieArrayList;
     RecyclerView movieListRecyclerView;
     ProgressBar progressBar;
 
-    public static String POSTER_PATH_KEY = "poster_path";
-    public static String IS_ADULT_KEY = "isAdult";
-    public static String OVERVIEW_KEY = "overview";
-    public static String RELEASE_DATE_KEY = "releaseDate";
-    public static String GENRE_ID_KEY = "genreIDs";
-    public static String ID_KEY = "id";
-    public static String ORIGINAL_TITLE_KEY ="originalTitle";
-    public static String ORIGINAL_LANGUAGE_KEY = "originalLanguage";
-    public static String TITLE_KEY = "title";
-    public static String BACKDROP_PATH_KEY = "backdropPath";
-    public static String POPULARITY_KEY = "popularity";
-    public static String VOTE_COUNT_KEY = "voteCount";
-    public static String VOTE_AVERAGE_KEY = "voteAverage";
+    public static final String POSTER_PATH_KEY = "poster_path";
+    public static final String IS_ADULT_KEY = "isAdult";
+    public static final String OVERVIEW_KEY = "overview";
+    public static final String RELEASE_DATE_KEY = "releaseDate";
+    public static final String GENRE_ID_KEY = "genreIDs";
+    public static final String ID_KEY = "id";
+    public static final String ORIGINAL_TITLE_KEY ="originalTitle";
+    public static final String ORIGINAL_LANGUAGE_KEY = "originalLanguage";
+    public static final String TITLE_KEY = "title";
+    public static final String BACKDROP_PATH_KEY = "backdropPath";
+    public static final String POPULARITY_KEY = "popularity";
+    public static final String VOTE_COUNT_KEY = "voteCount";
+    public static final String VOTE_AVERAGE_KEY = "voteAverage";
 
-    public String POPULARITY_INSTANCE_STATE_KEY = "popularity";
+    public final String POPULARITY_INSTANCE_STATE_KEY = "popularity";
 
     String finalURLPopularity ;
     String finalURLTopRated;

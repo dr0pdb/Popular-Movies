@@ -19,10 +19,10 @@ import java.util.ArrayList;
 
 public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.MovieListViewHolder> {
 
-    private String TAG = "MovieListAdapter";
+
     private final ArrayList<Movie> movieArrayList;
     private final MovieListRecyclerViewOnClickListener movieListRecyclerViewOnClickListener;
-    private Context context;    //This to use the Picasso library
+    private final Context context;    //This to use the Picasso library
 
     public MovieListAdapter(ArrayList<Movie> movieArrayList, MovieListRecyclerViewOnClickListener movieListRecyclerViewOnClickListener,Context context){
         this.movieArrayList = movieArrayList;
@@ -35,10 +35,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         int resourceIdForViewHolder = R.layout.single_movie_layout;
-        boolean shouldAttachToParentImmediately = false;
-        View view = inflater.inflate(resourceIdForViewHolder,parent,shouldAttachToParentImmediately);
-        MovieListViewHolder movieListViewHolder = new MovieListViewHolder(view);
-        return movieListViewHolder;
+        View view = inflater.inflate(resourceIdForViewHolder,parent,false);
+        return new MovieListViewHolder(view);
     }
 
     @Override
@@ -53,12 +51,12 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
 
     //An interface to be implemented by the movie list activity in order to setup onclick listener
     public interface MovieListRecyclerViewOnClickListener{
-        public void onListItemClicked(int position);
+        void onListItemClicked(int position);
     }
 
     //View Holder class for the recycler view adapter
     public class MovieListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView posterImageView;
+        final ImageView posterImageView;
 
         public MovieListViewHolder(View view){
             super(view);
@@ -78,6 +76,7 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
             try{
                 Picasso.with(context).load(imageURL).into(posterImageView);
             }catch (Exception e){
+                String TAG = "MovieListAdapter";
                 Log.e(TAG,"Unable to load poster");
             }
 

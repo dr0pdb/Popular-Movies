@@ -8,19 +8,19 @@ package com.example.srv_twry.popularmovies;
 
 public class Movie {
 
-    private String poster_path;
-    private boolean isAdult;
-    private String overview;
-    private String releaseDate;
-    private int[] genreIDs;
-    private int id;
-    private String originalTitle;
-    private String originalLanguage;
-    private String title;
-    private String backdropPath;
-    private double popularity;
-    private int voteCount;
-    private double voteAverage;
+    private final String poster_path;
+    private final boolean isAdult;
+    private final String overview;
+    private final String releaseDate;
+    private final int[] genreIDs;
+    private final int id;
+    private final String originalTitle;
+    private final String originalLanguage;
+    private final String title;
+    private final String backdropPath;
+    private final double popularity;
+    private final int voteCount;
+    private final double voteAverage;
 
     public Movie(String poster_path , boolean isAdult , String overview , String releaseDate, int[] genreIDs , int id , String originalTitle , String originalLanguage , String title , String backdropPath , double popularity , int voteCount , double voteAverage ){
         this.poster_path = poster_path;
