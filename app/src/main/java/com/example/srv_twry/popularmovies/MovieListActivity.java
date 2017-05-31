@@ -44,8 +44,11 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
     public static String VOTE_COUNT_KEY = "voteCount";
     public static String VOTE_AVERAGE_KEY = "voteAverage";
 
+    public String POPULARITY_INSTANCE_STATE_KEY = "popularity";
+
     String finalURLPopularity ;
     String finalURLTopRated;
+    boolean sortByPopularity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +63,26 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         finalURLPopularity = baseUrlPopularity.concat(apiKey.concat(postApiKeyUrl));
         finalURLTopRated= baseUrlTopRated.concat(apiKey.concat(postApiKeyUrl));
         movieArrayList = new ArrayList<>();
-        if (isNetworkAvailable()){
+
+        if (savedInstanceState !=null && isNetworkAvailable()){
+            boolean value = savedInstanceState.getBoolean(POPULARITY_INSTANCE_STATE_KEY);
+            if (value){
+                new GetMovieListAsyncTask().execute(finalURLPopularity);
+                sortByPopularity=true;
+            }else{
+                new GetMovieListAsyncTask().execute(finalURLTopRated);
+                sortByPopularity=false;
+            }
+        }
+        //sort by popularity for first run
+        else if (isNetworkAvailable()){
             new GetMovieListAsyncTask().execute(finalURLPopularity);
+            sortByPopularity=true;
         }
         movieListRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
         progressBar = (ProgressBar) findViewById(R.id.pb_loading_Data);
         MovieListAdapter movieListAdapter = new MovieListAdapter(movieArrayList,this,this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
         movieListRecyclerView.setAdapter(movieListAdapter);
         movieListRecyclerView.setLayoutManager(gridLayoutManager);
     }
@@ -88,9 +104,11 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         if (id == R.id.action_sort_popularity && isNetworkAvailable()) {
             new GetMovieListAsyncTask().execute(finalURLPopularity);
             showProgressBar();
+            sortByPopularity=true;
         }else if (id == R.id.action_sort_toprated && isNetworkAvailable()){
             new GetMovieListAsyncTask().execute(finalURLTopRated);
             showProgressBar();
+            sortByPopularity=false;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -145,6 +163,12 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
     public void showProgressBar(){
         progressBar.setVisibility(View.VISIBLE);
         movieListRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(POPULARITY_INSTANCE_STATE_KEY,sortByPopularity);
     }
 
     private class GetMovieListAsyncTask extends AsyncTask<String,Void,ArrayList<Movie>>{
