@@ -63,6 +63,17 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         finalURLTopRated= baseUrlTopRated.concat(apiKey.concat(postApiKeyUrl));
         movieArrayList = new ArrayList<>();
 
+        movieListRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
+        progressBar = (ProgressBar) findViewById(R.id.pb_loading_Data);
+        MovieListAdapter movieListAdapter = new MovieListAdapter(movieArrayList,this,this);
+
+        //Added this after the successful code submission and suggestions in the code review.
+        // This line reads from the resource file according to the orientation and sets different number of columns for landscape and portrait mode.
+        final int numberOfColumns = getResources().getInteger(R.integer.columns_in_grid_view);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,numberOfColumns);
+        movieListRecyclerView.setAdapter(movieListAdapter);
+        movieListRecyclerView.setLayoutManager(gridLayoutManager);
+
         if (savedInstanceState !=null && isNetworkAvailable()){
             boolean value = savedInstanceState.getBoolean(POPULARITY_INSTANCE_STATE_KEY);
             if (value){
@@ -77,13 +88,13 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         else if (isNetworkAvailable()){
             new GetMovieListAsyncTask().execute(finalURLPopularity);
             sortByPopularity=true;
+        }else{
+         //Added this after the successful code submission and suggestions in the code review. To Show an error toast if network not available.
+            progressBar.setVisibility(View.GONE);
+            Toast toast = Toast.makeText(this,"Check your Internet Connection!",Toast.LENGTH_LONG);
+            toast.show();
         }
-        movieListRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_list);
-        progressBar = (ProgressBar) findViewById(R.id.pb_loading_Data);
-        MovieListAdapter movieListAdapter = new MovieListAdapter(movieArrayList,this,this);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        movieListRecyclerView.setAdapter(movieListAdapter);
-        movieListRecyclerView.setLayoutManager(gridLayoutManager);
+
     }
 
 
@@ -210,18 +221,10 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
                     return movieList;
                 }catch (JSONException e){
                     Log.e(TAG,"JSON exception",e.fillInStackTrace());
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast toast = Toast.makeText(getApplicationContext(),"Unable to Parse the JSONResponse, try again!",Toast.LENGTH_LONG);
-                            toast.show();
-                        }
-                    });
                     return null;
                 }
             }else{
-                Toast toast = Toast.makeText(getBaseContext(),"Unable to fetch response, Check your Internet Connection !",Toast.LENGTH_LONG);
-                toast.show();
+                Log.e(TAG,"Network connection error !");
                 return null;
             }
         }
@@ -229,16 +232,16 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
         @Override
         protected void onPostExecute(ArrayList<Movie> movieArrayList) {
             MovieListActivity.movieArrayList = movieArrayList;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    MovieListAdapter movieListAdapter = new MovieListAdapter(MovieListActivity.movieArrayList,MovieListActivity.this,getBaseContext());
-                    showData();
-                    movieListRecyclerView.setAdapter(movieListAdapter);
-                    movieListRecyclerView.invalidate();
 
-                }
-            });
+            if (movieArrayList == null){
+                Toast toast = Toast.makeText(getApplicationContext(),"Unable to fetch response, Check your Internet Connection !",Toast.LENGTH_LONG);
+                toast.show();
+            }else{
+                MovieListAdapter movieListAdapter = new MovieListAdapter(MovieListActivity.movieArrayList,MovieListActivity.this,getBaseContext());
+                showData();
+                movieListRecyclerView.setAdapter(movieListAdapter);
+                movieListRecyclerView.invalidate();
+            }
         }
     }
 }

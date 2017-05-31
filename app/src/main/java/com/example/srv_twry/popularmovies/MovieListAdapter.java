@@ -73,13 +73,8 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.Movi
         public void bind(int position){
             String imageURL = movieArrayList.get(position).getPoster_path();
 
-            try{
-                Picasso.with(context).load(imageURL).into(posterImageView);
-            }catch (Exception e){
-                String TAG = "MovieListAdapter";
-                Log.e(TAG,"Unable to load poster");
-            }
-
+            //Added the placeholders after the review.
+            Picasso.with(context).load(imageURL).placeholder(R.drawable.ic_movie_black_75dp).error(R.drawable.ic_movie_black_75dp).into(posterImageView);
         }
     }
 }
