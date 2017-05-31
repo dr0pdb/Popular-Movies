@@ -7,4 +7,5 @@
     <dimen name="dimen_125dp">125dp</dimen>
     <dimen name="dimen_180dp">180dp</dimen>
     <dimen name="dimen_1dp">1dp</dimen>
+    <integer name="columns_in_grid_view">3</integer>
 </resources>
