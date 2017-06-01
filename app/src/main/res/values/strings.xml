@@ -8,4 +8,5 @@
     <string name="MoviePoster">Movie Poster here</string>
     <string name="trailer_title">Trailers and clips</string>
     <string name="content_description_video_image">To show the youtube icon</string>
+    <string name="reviews_title">Movie Reviews</string>
 </resources>

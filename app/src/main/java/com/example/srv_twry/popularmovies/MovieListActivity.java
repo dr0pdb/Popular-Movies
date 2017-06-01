@@ -56,7 +56,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
 
         final String baseUrlPopularity = "https://api.themoviedb.org/3/movie/popular?api_key=";
         final String apiKey = getResources().getString(R.string.Api_key);
-        final String postApiKeyUrl= "&language=en-US&page=1";
+        final String postApiKeyUrl= "&language=en-US";
         final String baseUrlTopRated="https://api.themoviedb.org/3/movie/top_rated?api_key=";
 
         finalURLPopularity = baseUrlPopularity.concat(apiKey.concat(postApiKeyUrl));

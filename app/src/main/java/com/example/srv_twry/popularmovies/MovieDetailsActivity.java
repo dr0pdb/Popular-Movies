@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +47,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
     TextView releaseDateTextView;
     TextView descriptionTextView;
     RecyclerView trailersRecyclerView;
+    RecyclerView reviewRecyclerView;
     public static ArrayList<MovieVideo> movieVideoArrayList;
+    public static ArrayList<MovieReview> movieReviewArrayList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
         releaseDateTextView = (TextView) findViewById(R.id.tv_releasedate_details_activity);
         descriptionTextView = (TextView) findViewById(R.id.tv_description_details_activity);
         trailersRecyclerView = (RecyclerView) findViewById(R.id.rv_trailers_details_activity);
+        reviewRecyclerView = (RecyclerView) findViewById(R.id.rv_reviews_details_activity);
         movieVideoArrayList=new ArrayList<>();
+        movieReviewArrayList = new ArrayList<>();
 
         Bundle bundle = getIntent().getExtras();
         if (bundle !=null){
@@ -88,19 +93,88 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
                 descriptionTextView.setText(overview);
         }
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManagerTrailer = new LinearLayoutManager(this);
         MovieVideoAdapter movieVideoAdapter = new MovieVideoAdapter(movieVideoArrayList,this);
         trailersRecyclerView.setAdapter(movieVideoAdapter);
-        trailersRecyclerView.setLayoutManager(linearLayoutManager);
+        trailersRecyclerView.setLayoutManager(linearLayoutManagerTrailer);
+
+        LinearLayoutManager linearLayoutManagerReview = new LinearLayoutManager(this);
+        MovieReviewAdapter movieReviewAdapter = new MovieReviewAdapter(movieReviewArrayList);
+        reviewRecyclerView.setAdapter(movieReviewAdapter);
+        reviewRecyclerView.setLayoutManager(linearLayoutManagerReview);
 
         //get the trailers and reviews
         if (isNetworkAvailable()){
             RequestQueue queue = Volley.newRequestQueue(this);
-            JsonObjectRequest jsonObjectRequest = getMovieVideoJsonObject();
-            queue.add(jsonObjectRequest);
+            JsonObjectRequest jsonObjectRequestTrailer = getMovieVideoJsonObject();
+            JsonObjectRequest jsonObjectRequestReview = getReviewJsonObject();
+
+            queue.add(jsonObjectRequestTrailer);
+            queue.add(jsonObjectRequestReview);
+
         }else{
             //show error toast and hide progress bar of trailers and reviews.
         }
+    }
+
+    //Helper method to create the JsonObjectRequest for the trailers
+    private JsonObjectRequest getReviewJsonObject() {
+        //Get the data from the background thread using volley
+        final String apiKey = getResources().getString(R.string.Api_key);
+        String movieVideoUrl = "https://api.themoviedb.org/3/movie/"+id+"/reviews?api_key="+apiKey+"&language=en-US";
+        return new JsonObjectRequest(Request.Method.GET,movieVideoUrl,null,new Response.Listener<JSONObject>(){
+
+            @Override
+            public void onResponse(JSONObject response) {
+                movieReviewArrayList = parseReviewJson(response);
+
+                //This to handle case when their are no reviews for a movie.
+                if (movieReviewArrayList.size()==0){
+                    View v = findViewById(R.id.view3);
+                    v.setVisibility(View.GONE);
+                    TextView title = (TextView) findViewById(R.id.reviews_title);
+                    title.setVisibility(View.GONE);
+                    reviewRecyclerView.setVisibility(View.GONE);
+                }else{
+                    MovieReviewAdapter movieReviewAdapter = new MovieReviewAdapter(movieReviewArrayList);
+                    reviewRecyclerView.setAdapter(movieReviewAdapter);
+                    reviewRecyclerView.invalidate();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast toast = Toast.makeText(getBaseContext(),"Check your internet connection",Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+    }
+
+    //Helper method to parse the Json to ArrayList<MovieReview>
+    private ArrayList<MovieReview> parseReviewJson(JSONObject response) {
+        ArrayList<MovieReview> movieReviewArrayList = new ArrayList<>();
+        if (response !=null){
+            try{
+                JSONArray results = response.getJSONArray("results");
+
+                //get the individual reviews
+                for (int i=0;i<results.length();i++){
+                    JSONObject obj = results.getJSONObject(i);
+                    String author = obj.getString("author");
+                    String content= obj.getString("content");
+                    String movieUrl = obj.getString("url");
+
+                    movieReviewArrayList.add(new MovieReview(author,content,movieUrl));
+                }
+            }catch (JSONException e){
+                e.printStackTrace();
+                Log.e(TAG,"error in parsing JSON");
+            }
+        }
+        return movieReviewArrayList;
     }
 
     //Helper method to create the JsonObjectRequest for the trailers
@@ -128,7 +202,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
         });
 
     }
-
+    //Helper method to parse the Json to ArrayList<MovieVideo>
     private ArrayList<MovieVideo> parseVideoJson(JSONObject response) {
 
         ArrayList<MovieVideo> movieVideoArrayList = new ArrayList<>();

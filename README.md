@@ -7,4 +7,5 @@ API Used-
 	Themoviedb
 Libraries used-
 	Picasso
+	Square Expandable TextView
 	
