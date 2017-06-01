@@ -23,6 +23,11 @@
         </activity>
         <activity android:name=".MovieDetailsActivity"
             android:parentActivityName=".MovieListActivity" />
+
+        <provider
+            android:authorities="com.example.srv_twry.popularmovies"
+            android:name="com.example.srv_twry.popularmovies.Data.FavouritesContentProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
