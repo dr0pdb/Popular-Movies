@@ -159,7 +159,7 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
     }
 
     //A helper method to check Internet Connection Status
-    private boolean isNetworkAvailable() {
+    public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

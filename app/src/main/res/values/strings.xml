@@ -6,4 +6,6 @@
     <string name="overview">Overview</string>
     <string name="Movie_Detail">Movie Details</string>
     <string name="MoviePoster">Movie Poster here</string>
+    <string name="trailer_title">Trailers and clips</string>
+    <string name="content_description_video_image">To show the youtube icon</string>
 </resources>

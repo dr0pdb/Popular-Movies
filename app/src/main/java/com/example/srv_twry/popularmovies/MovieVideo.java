@@ -6,12 +6,12 @@ package com.example.srv_twry.popularmovies;
  */
 
 public class MovieVideo {
-    private int key;
+    private String key;
     private String name;
     private String finalVideoURL=null;
     private int id;     //id associated with the movie
 
-    public MovieVideo(int key, String name, String site, int id){
+    public MovieVideo(String key, String name, String site, int id){
         this.key=key;
         this.name=name;
         this.id=id;
@@ -20,7 +20,7 @@ public class MovieVideo {
         }
     }
 
-    public int getKey() {
+    public String getKey() {
         return key;
     }
 
