@@ -49,7 +49,7 @@ public class FavouritesContentProvider extends ContentProvider {
 
         switch (match){
             case FAVOURITES:
-                long id = db.insertWithOnConflict(FavouritesDbContract.FavouritesEntry.TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_ABORT);
+                long id = db.insert(FavouritesDbContract.FavouritesEntry.TABLE_NAME,null,values);
                 if (id>0){
                     returnUri = ContentUris.withAppendedId(uri,id);
                 }else{

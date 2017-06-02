@@ -3,12 +3,15 @@ package com.example.srv_twry.popularmovies;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +50,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
     String title;
     double voteAverage;
     int id;     //id associated with the movie
+    int db_id_movie;    //stores the _id of the movie when it is added to favourites database.
 
     ImageView posterImageView;
     TextView titleTextView;
@@ -58,6 +62,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
     Bitmap posterBitmap;   //This will be used to save the poster in database if the user marks it as favourite.
     public static ArrayList<MovieVideo> movieVideoArrayList;
     public static ArrayList<MovieReview> movieReviewArrayList;
+    boolean isFavourite;
+    MenuItem isFavouriteItem;
+    MenuItem setFavouriteItem;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +126,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
                 descriptionTextView.setText(overview);
         }
 
+        if (savedInstanceState !=null){
+            isFavourite=savedInstanceState.getBoolean("Is Favourite");
+        }
+
         LinearLayoutManager linearLayoutManagerTrailer = new LinearLayoutManager(this);
         MovieVideoAdapter movieVideoAdapter = new MovieVideoAdapter(movieVideoArrayList,this);
         trailersRecyclerView.setAdapter(movieVideoAdapter);
@@ -143,6 +155,9 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
             Toast toast = Toast.makeText(this,"Unable to fetch Trailers and reviews",Toast.LENGTH_LONG);
             toast.show();
         }
+
+        sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+        db_id_movie = sharedPreferences.getInt("database_id_movie "+title,-1);
     }
 
     //Helper method to create the JsonObjectRequest for the trailers
@@ -280,6 +295,17 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_favourites,menu);
+        isFavouriteItem= menu.findItem(R.id.is_favourite);
+        setFavouriteItem = menu.findItem(R.id.add_to_favourites);
+
+        isFavourite = sharedPreferences.getBoolean(title,false);
+        if (isFavourite){
+            isFavouriteItem.setVisible(true);
+            setFavouriteItem.setVisible(false);
+        }else{
+            isFavouriteItem.setVisible(false);
+            setFavouriteItem.setVisible(true);
+        }
         return true;
     }
 
@@ -304,9 +330,29 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
             Log.v(TAG,uri+ " added");
 
             if (uri !=null){
-                Toast toast = Toast.makeText(getBaseContext(),"Successfully Added to Favourites",Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getBaseContext(),"Successfully Added to Favourites",Toast.LENGTH_SHORT);
                 toast.show();
             }
+            isFavouriteItem.setVisible(true);
+            setFavouriteItem.setVisible(false);
+            isFavourite=true;
+
+            db_id_movie = Integer.parseInt(uri.getPathSegments().get(1));
+
+        }else if(id == R.id.is_favourite){
+
+            String stringId = Integer.toString(db_id_movie);
+            Uri uri = FavouritesDbContract.FavouritesEntry.CONTENT_URI;
+            uri = uri.buildUpon().appendPath(stringId).build();
+            Log.v(TAG,"Deleting "+uri.toString());
+            getContentResolver().delete(uri,null,null);
+
+            isFavouriteItem.setVisible(false);
+            setFavouriteItem.setVisible(true);
+            db_id_movie=-1;
+            isFavourite=false;
+            Toast toast = Toast.makeText(this,"Removed from Favourites",Toast.LENGTH_SHORT);
+            toast.show();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -327,5 +373,18 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("Is Favourite",isFavourite);
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(title,isFavourite);
+        editor.putInt("database_id_movie "+title,db_id_movie);
+        editor.apply();
+    }
 }

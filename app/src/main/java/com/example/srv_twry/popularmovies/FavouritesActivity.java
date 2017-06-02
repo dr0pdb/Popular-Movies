@@ -1,12 +1,15 @@
 package com.example.srv_twry.popularmovies;
 
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -21,7 +24,7 @@ import com.example.srv_twry.popularmovies.Data.FavouritesDbContract;
 public class FavouritesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = FavouritesActivity.class.getSimpleName();
-    private final int LOADER_ID = 100;
+    public static final int LOADER_ID = 100;
 
     ProgressBar favouritesPb;
     RecyclerView favouritesRecyclerView;
@@ -39,31 +42,12 @@ public class FavouritesActivity extends AppCompatActivity implements LoaderManag
 
         mAdapter = new FavouritesCursorAdapter(this);
         favouritesRecyclerView.setAdapter(mAdapter);
-        favouritesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        final int numberOfColumns = getResources().getInteger(R.integer.columns_in_grid_view);
+        favouritesRecyclerView.setLayoutManager(new GridLayoutManager(this,numberOfColumns));
 
         getSupportLoaderManager().initLoader(LOADER_ID,null,this);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT){
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                int id = (int) viewHolder.itemView.getTag();            //The tag was set in the adapter's onBindViewHolder method.
-
-                String stringId = Integer.toString(id);
-                Uri uri = FavouritesDbContract.FavouritesEntry.CONTENT_URI;
-                uri = uri.buildUpon().appendPath(stringId).build();
-                Log.v(TAG,"Deleting "+uri.toString());
-                getContentResolver().delete(uri,null,null);
-
-                getSupportLoaderManager().restartLoader(LOADER_ID,null,FavouritesActivity.this);
-            }
-        }).attachToRecyclerView(favouritesRecyclerView);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -126,4 +110,5 @@ public class FavouritesActivity extends AppCompatActivity implements LoaderManag
     public void onLoaderReset(Loader<Cursor> loader) {
         mAdapter.swapCursor(null);
     }
+
 }

@@ -6,7 +6,15 @@
         android:id="@+id/add_to_favourites"
         android:orderInCategory="100"
         app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_add_to_fav_icon"
+        android:icon="@drawable/ic_action_mark_favourite"
         android:title="@string/Add_to_fav"/>
+
+    <item
+        android:id="@+id/is_favourite"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:title="@string/Add_to_fav"
+        android:icon="@drawable/ic_action_isfavourite"
+        android:visible="false"/>
 
 </menu>
