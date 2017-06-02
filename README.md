@@ -6,7 +6,7 @@
 
 This is my first ever fully functional Android-Project which i built from scratch taking the [Android Developers Nanodegree](https://www.udacity.com/course/android-developer-nanodegree-by-google--nd801). It was highly reviewed by a Udacity reviewer and was accepted as the final Project.
 
-##Features  
+## Features  
 This app includes: 
 
 
@@ -42,6 +42,15 @@ In order to run this project you must get your own API key from [TheMovieDb](htt
 ```
     <string name="Api_key">..your api here..</string>
 ```
+
+
+## Branches
+This project has three branches associated with it-
+
+
++ Master: This is the main branch which contains the final fully functional app.
++ stage-1: The stage-1 of the project which was only related to Main screen and the details screen.
++ stage-2: The stage-2 of the project which was focused on fetching trailers and reviews, adding favourites feature and optimizing the tablet layout.
 
 
 ## Libraries used
