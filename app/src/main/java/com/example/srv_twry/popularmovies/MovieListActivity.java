@@ -119,6 +119,10 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
             new GetMovieListAsyncTask().execute(finalURLTopRated);
             showProgressBar();
             sortByPopularity=false;
+        }else if(id == R.id.action_show_favourites){
+            Intent intent = new Intent(this,FavouritesActivity.class);
+            startActivity(intent);
+
         }
         return super.onOptionsItemSelected(item);
     }

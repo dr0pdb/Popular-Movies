@@ -9,4 +9,7 @@
     <string name="trailer_title">Trailers and clips</string>
     <string name="content_description_video_image">To show the youtube icon</string>
     <string name="reviews_title">Movie Reviews</string>
+    <string name="Favourites">My Favourites</string>
+    <string name="Add_to_fav"></string>
+    <string name="my_favourites">My Favourites</string>
 </resources>

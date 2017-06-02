@@ -24,7 +24,7 @@ public class FavouritesDbHelper extends SQLiteOpenHelper {
                 FavouritesDbContract.FavouritesEntry._ID                + " INTEGER PRIMARY KEY, " +
                 FavouritesDbContract.FavouritesEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
                 FavouritesDbContract.FavouritesEntry.COLUMN_TITLE    + " TEXT NOT NULL, "+
-                FavouritesDbContract.FavouritesEntry.COLUMN_POSTER   + "BLOB);";
+                FavouritesDbContract.FavouritesEntry.COLUMN_POSTER   + " BLOB);";
 
         db.execSQL(CREATE_TABLE);
     }

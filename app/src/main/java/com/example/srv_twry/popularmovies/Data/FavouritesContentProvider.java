@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 /**
  * Created by srv_twry on 1/6/17.
@@ -48,7 +49,7 @@ public class FavouritesContentProvider extends ContentProvider {
 
         switch (match){
             case FAVOURITES:
-                long id = db.insert(FavouritesDbContract.FavouritesEntry.TABLE_NAME,null,values);
+                long id = db.insertWithOnConflict(FavouritesDbContract.FavouritesEntry.TABLE_NAME,null,values,SQLiteDatabase.CONFLICT_ABORT);
                 if (id>0){
                     returnUri = ContentUris.withAppendedId(uri,id);
                 }else{
@@ -67,7 +68,7 @@ public class FavouritesContentProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         final SQLiteDatabase db = favouritesDbHelper.getReadableDatabase();
-        Cursor returnCursor = null;
+        Cursor returnCursor;
 
         int match = uriMatcher.match(uri);
 
@@ -85,25 +86,26 @@ public class FavouritesContentProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        final SQLiteDatabase db = favouritesDbHelper.getWritableDatabase();
-        int taskDeleted = 0;
+        SQLiteDatabase db = favouritesDbHelper.getWritableDatabase();
+        int moviesDeleted;
 
         int match = uriMatcher.match(uri);
 
         switch (match){
             case FAVOURITE_INDIVIDUAL:
-                String id = uri.getPathSegments().get(1);
-                taskDeleted = db.delete(FavouritesDbContract.FavouritesEntry.TABLE_NAME,"_id=?", new String[]{id});
+                String stringId = uri.getPathSegments().get(1);
+                moviesDeleted = db.delete(FavouritesDbContract.FavouritesEntry.TABLE_NAME,"_id=?", new String[]{stringId});
+                Log.v("ContentProvider ","Deleted id="+stringId + " from the database, Number of movies deleted = "+ moviesDeleted);
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        if (taskDeleted !=0){
+        if (moviesDeleted !=0){
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
-        return taskDeleted;
+        return moviesDeleted;
     }
 
     @Nullable

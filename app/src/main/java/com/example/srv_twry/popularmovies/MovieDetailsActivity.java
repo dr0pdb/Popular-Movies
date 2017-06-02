@@ -1,7 +1,10 @@
 package com.example.srv_twry.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -10,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,12 +26,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.srv_twry.popularmovies.Data.FavouritesDbContract;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 public class MovieDetailsActivity extends AppCompatActivity implements MovieVideoAdapter.MovieVideoOnClickListener{
@@ -48,6 +55,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
     TextView descriptionTextView;
     RecyclerView trailersRecyclerView;
     RecyclerView reviewRecyclerView;
+    Bitmap posterBitmap;   //This will be used to save the poster in database if the user marks it as favourite.
     public static ArrayList<MovieVideo> movieVideoArrayList;
     public static ArrayList<MovieReview> movieReviewArrayList;
 
@@ -85,7 +93,24 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
             title = bundle.getString(MovieListActivity.TITLE_KEY);
             voteAverage = bundle.getDouble(MovieListActivity.VOTE_AVERAGE_KEY);
 
-                Picasso.with(getBaseContext()).load(poster_path).into(posterImageView);
+                Picasso.with(getBaseContext()).load(poster_path).into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        posterBitmap = bitmap;
+                        posterImageView.setImageBitmap(bitmap);
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
+                        posterImageView.setImageResource(R.drawable.ic_movie_black_75dp);
+                        Log.e(TAG,"Unable to load Poster");
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
                 titleTextView.setText(title);
                 String voteAverageTotalFinalText = "User Rating: "+voteAverage + "/10";
                 voteAverageTotalTextView.setText(voteAverageTotalFinalText);
@@ -113,7 +138,10 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
             queue.add(jsonObjectRequestReview);
 
         }else{
-            //show error toast and hide progress bar of trailers and reviews.
+            noVideoAvailable();
+            noReviewsAvailable();
+            Toast toast = Toast.makeText(this,"Unable to fetch Trailers and reviews",Toast.LENGTH_LONG);
+            toast.show();
         }
     }
 
@@ -130,11 +158,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
 
                 //This to handle case when their are no reviews for a movie.
                 if (movieReviewArrayList.size()==0){
-                    View v = findViewById(R.id.view3);
-                    v.setVisibility(View.GONE);
-                    TextView title = (TextView) findViewById(R.id.reviews_title);
-                    title.setVisibility(View.GONE);
-                    reviewRecyclerView.setVisibility(View.GONE);
+                    noReviewsAvailable();
                 }else{
                     MovieReviewAdapter movieReviewAdapter = new MovieReviewAdapter(movieReviewArrayList);
                     reviewRecyclerView.setAdapter(movieReviewAdapter);
@@ -177,6 +201,22 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
         return movieReviewArrayList;
     }
 
+    public void noReviewsAvailable(){
+        View v = findViewById(R.id.view3);
+        v.setVisibility(View.GONE);
+        TextView title = (TextView) findViewById(R.id.reviews_title);
+        title.setVisibility(View.GONE);
+        reviewRecyclerView.setVisibility(View.GONE);
+    }
+
+    public void noVideoAvailable(){
+        View view = findViewById(R.id.view2);
+        TextView textView =(TextView) findViewById(R.id.trailers_title);
+        view.setVisibility(View.GONE);
+        textView.setVisibility(View.GONE);
+        trailersRecyclerView.setVisibility(View.GONE);
+    }
+
     //Helper method to create the JsonObjectRequest for the trailers
     private JsonObjectRequest getMovieVideoJsonObject() {
 
@@ -188,6 +228,12 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
             @Override
             public void onResponse(JSONObject response) {
                 movieVideoArrayList = parseVideoJson(response);
+
+                //If their are no Videos available
+                if (movieVideoArrayList.size() ==0){
+                    noVideoAvailable();
+                }
+
                 MovieVideoAdapter movieVideoAdapter = new MovieVideoAdapter(movieVideoArrayList,MovieDetailsActivity.this);
                 trailersRecyclerView.setAdapter(movieVideoAdapter);
                 trailersRecyclerView.invalidate();
@@ -232,12 +278,35 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_favourites,menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id==android.R.id.home){
             finish();
             return true;
+        }else if (id == R.id.add_to_favourites){
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            posterBitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayOutputStream);
+            byte[] posterByteStream = byteArrayOutputStream.toByteArray();
+
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(FavouritesDbContract.FavouritesEntry.COLUMN_MOVIE_ID,id);
+            contentValues.put(FavouritesDbContract.FavouritesEntry.COLUMN_TITLE,title);
+            contentValues.put(FavouritesDbContract.FavouritesEntry.COLUMN_POSTER,posterByteStream);
+
+            Uri uri = getContentResolver().insert(FavouritesDbContract.FavouritesEntry.CONTENT_URI,contentValues);
+            Log.v(TAG,uri+ " added");
+
+            if (uri !=null){
+                Toast toast = Toast.makeText(getBaseContext(),"Successfully Added to Favourites",Toast.LENGTH_LONG);
+                toast.show();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
