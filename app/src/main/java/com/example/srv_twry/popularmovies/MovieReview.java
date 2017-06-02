@@ -5,10 +5,10 @@ package com.example.srv_twry.popularmovies;
  * A Java class to represent a single movie review
  */
 
-public class MovieReview {
-    private String author;
-    private String content;
-    private String reviewUrl;
+class MovieReview {
+    private final String author;
+    private final String content;
+    private final String reviewUrl;
 
     public MovieReview(String author, String content , String reviewUrl){
         this.author=author;
@@ -24,7 +24,4 @@ public class MovieReview {
         return content;
     }
 
-    public String getReviewUrl() {
-        return reviewUrl;
-    }
 }

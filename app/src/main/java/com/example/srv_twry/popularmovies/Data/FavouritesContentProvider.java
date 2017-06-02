@@ -17,10 +17,10 @@ import android.util.Log;
 
 public class FavouritesContentProvider extends ContentProvider {
 
-    public static final int FAVOURITES =100;
-    public static final int FAVOURITE_INDIVIDUAL = 101;
+    private static final int FAVOURITES =100;
+    private static final int FAVOURITE_INDIVIDUAL = 101;
 
-    public static final UriMatcher uriMatcher = buildUriMatcher();
+    private static final UriMatcher uriMatcher = buildUriMatcher();
 
     private static UriMatcher buildUriMatcher() {
         UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);

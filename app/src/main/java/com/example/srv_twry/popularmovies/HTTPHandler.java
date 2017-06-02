@@ -15,7 +15,7 @@ import java.net.URL;
  * Created by srv_twry on 30/5/17.
  */
 
-public class HTTPHandler {
+class HTTPHandler {
     private static final String TAG = HTTPHandler.class.getSimpleName();
 
     //Empty constructor

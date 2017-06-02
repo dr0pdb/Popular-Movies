@@ -5,11 +5,11 @@ package com.example.srv_twry.popularmovies;
  * A class to denote a single Video asset of a movie like trailer, Featurette etc.
  */
 
-public class MovieVideo {
-    private String key;
-    private String name;
+class MovieVideo {
+    private final String key;
+    private final String name;
     private String finalVideoURL=null;
-    private int id;     //id associated with the movie
+    private final int id;     //id associated with the movie
 
     public MovieVideo(String key, String name, String site, int id){
         this.key=key;
@@ -20,10 +20,6 @@ public class MovieVideo {
         }
     }
 
-    public String getKey() {
-        return key;
-    }
-
     public String getName() {
         return name;
     }
@@ -32,7 +28,4 @@ public class MovieVideo {
         return finalVideoURL;
     }
 
-    public int getId() {
-        return id;
-    }
 }

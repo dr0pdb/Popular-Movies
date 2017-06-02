@@ -18,8 +18,8 @@ import java.util.ArrayList;
 
 public class MovieVideoAdapter extends RecyclerView.Adapter<MovieVideoAdapter.MovieVideoViewHolder> {
 
-    private ArrayList<MovieVideo> movieVideoArrayList;
-    private MovieVideoOnClickListener movieVideoOnClickListener;
+    private final ArrayList<MovieVideo> movieVideoArrayList;
+    private final MovieVideoOnClickListener movieVideoOnClickListener;
 
     public MovieVideoAdapter(ArrayList<MovieVideo>movieVideoArrayList,MovieVideoOnClickListener movieVideoOnClickListener){
         this.movieVideoArrayList = movieVideoArrayList;
@@ -51,9 +51,9 @@ public class MovieVideoAdapter extends RecyclerView.Adapter<MovieVideoAdapter.Mo
 
     public class MovieVideoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        CardView cardView;
-        ImageView videoImage;
-        TextView videoTitle;
+        final CardView cardView;
+        final ImageView videoImage;
+        final TextView videoTitle;
 
         public MovieVideoViewHolder(View view){
             super(view);

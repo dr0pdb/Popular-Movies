@@ -21,7 +21,7 @@ import java.io.ByteArrayInputStream;
 
 public class FavouritesCursorAdapter extends RecyclerView.Adapter<FavouritesCursorAdapter.FavouritesViewHolder> {
 
-    private Context mContext;
+    private final Context mContext;
     private Cursor mCursor;
 
     public FavouritesCursorAdapter(Context context){
@@ -29,6 +29,7 @@ public class FavouritesCursorAdapter extends RecyclerView.Adapter<FavouritesCurs
     }
 
     //On its first run it initializes the cursor.
+    @SuppressWarnings("UnusedReturnValue")
     public Cursor swapCursor(Cursor c){
         if (mCursor==c){
             return null;
@@ -78,7 +79,7 @@ public class FavouritesCursorAdapter extends RecyclerView.Adapter<FavouritesCurs
 
     public class FavouritesViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView posterView;
+        final ImageView posterView;
 
         public FavouritesViewHolder(View view){
             super(view);

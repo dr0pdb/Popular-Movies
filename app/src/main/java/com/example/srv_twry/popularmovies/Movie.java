@@ -6,7 +6,7 @@ package com.example.srv_twry.popularmovies;
  */
 
 
-public class Movie {
+class Movie {
 
     private final String poster_path;
     private final boolean isAdult;

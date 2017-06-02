@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.MovieReviewViewHolder> {
 
-    private ArrayList<MovieReview> movieReviewArrayList;
+    private final ArrayList<MovieReview> movieReviewArrayList;
 
     public MovieReviewAdapter(ArrayList<MovieReview>movieReviewArrayList){
         this.movieReviewArrayList=movieReviewArrayList;
@@ -44,8 +44,8 @@ public class MovieReviewAdapter extends RecyclerView.Adapter<MovieReviewAdapter.
     //View Holder class for the MovieReviewAdapter
     public class MovieReviewViewHolder extends RecyclerView.ViewHolder{
 
-        TextView content;
-        TextView author;
+        final TextView content;
+        final TextView author;
 
         public MovieReviewViewHolder(View view){
             super(view);

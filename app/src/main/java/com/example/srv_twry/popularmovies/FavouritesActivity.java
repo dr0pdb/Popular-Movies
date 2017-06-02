@@ -24,10 +24,10 @@ import com.example.srv_twry.popularmovies.Data.FavouritesDbContract;
 public class FavouritesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final String TAG = FavouritesActivity.class.getSimpleName();
-    public static final int LOADER_ID = 100;
+    private static final int LOADER_ID = 100;
 
-    ProgressBar favouritesPb;
-    RecyclerView favouritesRecyclerView;
+    private ProgressBar favouritesPb;
+    private RecyclerView favouritesRecyclerView;
     private FavouritesCursorAdapter mAdapter;
 
     @Override

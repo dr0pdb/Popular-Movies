@@ -44,28 +44,28 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
 
     private static final String TAG = MovieListActivity.class.getSimpleName();
 
-    String poster_path;
-    String overview;
-    String releaseDate;
-    String title;
-    double voteAverage;
-    int id;     //id associated with the movie
-    int db_id_movie;    //stores the _id of the movie when it is added to favourites database.
+    private String poster_path;
+    private String overview;
+    private String releaseDate;
+    private String title;
+    private double voteAverage;
+    private int id;     //id associated with the movie
+    private int db_id_movie;    //stores the _id of the movie when it is added to favourites database.
 
-    ImageView posterImageView;
-    TextView titleTextView;
-    TextView voteAverageTotalTextView;
-    TextView releaseDateTextView;
-    TextView descriptionTextView;
-    RecyclerView trailersRecyclerView;
-    RecyclerView reviewRecyclerView;
-    Bitmap posterBitmap;   //This will be used to save the poster in database if the user marks it as favourite.
-    public static ArrayList<MovieVideo> movieVideoArrayList;
-    public static ArrayList<MovieReview> movieReviewArrayList;
-    boolean isFavourite;
-    MenuItem isFavouriteItem;
-    MenuItem setFavouriteItem;
-    SharedPreferences sharedPreferences;
+    private ImageView posterImageView;
+    private TextView titleTextView;
+    private TextView voteAverageTotalTextView;
+    private TextView releaseDateTextView;
+    private TextView descriptionTextView;
+    private RecyclerView trailersRecyclerView;
+    private RecyclerView reviewRecyclerView;
+    private Bitmap posterBitmap;   //This will be used to save the poster in database if the user marks it as favourite.
+    private static ArrayList<MovieVideo> movieVideoArrayList;
+    private static ArrayList<MovieReview> movieReviewArrayList;
+    private boolean isFavourite;
+    private MenuItem isFavouriteItem;
+    private MenuItem setFavouriteItem;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -216,7 +216,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
         return movieReviewArrayList;
     }
 
-    public void noReviewsAvailable(){
+    private void noReviewsAvailable(){
         View v = findViewById(R.id.view3);
         v.setVisibility(View.GONE);
         TextView title = (TextView) findViewById(R.id.reviews_title);
@@ -224,7 +224,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
         reviewRecyclerView.setVisibility(View.GONE);
     }
 
-    public void noVideoAvailable(){
+    private void noVideoAvailable(){
         View view = findViewById(R.id.view2);
         TextView textView =(TextView) findViewById(R.id.trailers_title);
         view.setVisibility(View.GONE);
@@ -366,7 +366,7 @@ public class MovieDetailsActivity extends AppCompatActivity implements MovieVide
     }
 
     //A helper method to check Internet Connection Status
-    public boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();

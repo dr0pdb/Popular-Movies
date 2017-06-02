@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * The Database helper class for the Favourites Database
  */
 
-public class FavouritesDbHelper extends SQLiteOpenHelper {
+class FavouritesDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME= "PopularMovies.db";
     private static final int VERSION = 1;

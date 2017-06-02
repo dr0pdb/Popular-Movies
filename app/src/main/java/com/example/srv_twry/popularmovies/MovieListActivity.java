@@ -24,30 +24,30 @@ import java.util.ArrayList;
 
 public class MovieListActivity extends AppCompatActivity implements MovieListAdapter.MovieListRecyclerViewOnClickListener {
 
-    public static final String TAG = MovieListActivity.class.getSimpleName();
-    public static ArrayList<Movie> movieArrayList;
-    RecyclerView movieListRecyclerView;
-    ProgressBar progressBar;
+    private static final String TAG = MovieListActivity.class.getSimpleName();
+    private static ArrayList<Movie> movieArrayList;
+    private RecyclerView movieListRecyclerView;
+    private ProgressBar progressBar;
 
     public static final String POSTER_PATH_KEY = "poster_path";
-    public static final String IS_ADULT_KEY = "isAdult";
+    private static final String IS_ADULT_KEY = "isAdult";
     public static final String OVERVIEW_KEY = "overview";
     public static final String RELEASE_DATE_KEY = "releaseDate";
-    public static final String GENRE_ID_KEY = "genreIDs";
+    private static final String GENRE_ID_KEY = "genreIDs";
     public static final String ID_KEY = "id";
-    public static final String ORIGINAL_TITLE_KEY ="originalTitle";
-    public static final String ORIGINAL_LANGUAGE_KEY = "originalLanguage";
+    private static final String ORIGINAL_TITLE_KEY ="originalTitle";
+    private static final String ORIGINAL_LANGUAGE_KEY = "originalLanguage";
     public static final String TITLE_KEY = "title";
-    public static final String BACKDROP_PATH_KEY = "backdropPath";
-    public static final String POPULARITY_KEY = "popularity";
-    public static final String VOTE_COUNT_KEY = "voteCount";
+    private static final String BACKDROP_PATH_KEY = "backdropPath";
+    private static final String POPULARITY_KEY = "popularity";
+    private static final String VOTE_COUNT_KEY = "voteCount";
     public static final String VOTE_AVERAGE_KEY = "voteAverage";
 
-    public final String POPULARITY_INSTANCE_STATE_KEY = "popularity";
+    private final String POPULARITY_INSTANCE_STATE_KEY = "popularity";
 
-    String finalURLPopularity ;
-    String finalURLTopRated;
-    boolean sortByPopularity;
+    private String finalURLPopularity ;
+    private String finalURLTopRated;
+    private boolean sortByPopularity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,18 +163,18 @@ public class MovieListActivity extends AppCompatActivity implements MovieListAda
     }
 
     //A helper method to check Internet Connection Status
-    public boolean isNetworkAvailable() {
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    public void showData(){
+    private void showData(){
         progressBar.setVisibility(View.GONE);
         movieListRecyclerView.setVisibility(View.VISIBLE);
     }
-    public void showProgressBar(){
+    private void showProgressBar(){
         progressBar.setVisibility(View.VISIBLE);
         movieListRecyclerView.setVisibility(View.GONE);
     }
